@@ -20,6 +20,7 @@ import { Shape } from "./shape/shape.js";
 import { AnimationFrame } from "./animation/animationFrame.js";
 import { Animation } from "./animation/animation.js";
 import { eventBus } from "./util/eventBus.js"
+import { AnimationTimer } from './animation/animationTimer.js';
 /**
  * 
  * 
@@ -254,13 +255,14 @@ WxDraw.prototype = {
     }
 }
 
-var wxDraw = {
-    wxDraw: WxDraw,
-    Shape: Shape,
-    AnimationFrame: AnimationFrame()
-};
+// var wxDraw = {
+//     wxDraw: WxDraw,
+//     Shape: Shape,
+//     AnimationFrame: AnimationFrame()
+// };
 
 
+const animationFrame=AnimationFrame()
 
-
-module.exports = wxDraw;
+// module.exports = wxDraw;
+export { WxDraw as wxDraw, WxDraw, Shape, animationFrame as AnimationFrame, AnimationTimer };

@@ -2,23 +2,14 @@
   "name": "wxdraw",
   "version": "1.0.0",
   "description": "weixin app canvas libiray",
+  "type": "module",
   "main": "index.js",
-  "devDependencies": {
-    "babel-plugin-external-helpers": "^6.22.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-latest": "^6.24.1",
-    "babel-runtime": "^6.26.0",
-    "rollup-plugin-babel": "^2.6.1",
-    "rollup-plugin-uglify": "^1.0.1",
-    "rollup-watch": "^4.3.1"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -c rollup.config.prod.js&&cp ./dist/wxdraw.min.js ../example/util&&cp ./dist/wxdraw.min.js ../test/util",
-    "start": "rollup -c&&cp ./dist/wxdraw.js ../test/util",
+    "build:cp": "rollup -c rollup.config.prod.js&&cp ./dist/wxdraw.min.js ../example/util&&cp ./dist/wxdraw.min.js ../test/util",
+    "build": "rollup -c rollup.config.prod.js",
+    "start:cp": "rollup -c&&cp ./dist/wxdraw.js ../test/util",
+    "start": "rollup -c",
     "bd": "rollup -c rollup.config.prod.js&&cp ./dist/wxdraw.min.js ../example/util"
   },
   "repository": {
@@ -31,7 +22,13 @@
   "author": "bobiscool OR call me thunderball.wu",
   "license": "MIT",
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
-    "rollup": "^0.56.4"
+    "rollup": "^4.24.0",
+    "wxdraw": "file:"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.25.7",
+    "@babel/preset-env": "^7.25.8",
+    "@rollup/plugin-babel": "^6.0.4",
+    "rollup-plugin-uglify": "^6.0.4"
   }
 }

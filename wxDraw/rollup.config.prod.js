@@ -1,19 +1,25 @@
-import babel from 'rollup-plugin-babel';
-import uglify from 'rollup-plugin-uglify';
+// import babel from "rollup-plugin-babel";
+import { babel } from "@rollup/plugin-babel";
+import { uglify } from "rollup-plugin-uglify";
 
-
+/** @type {import('rollup').RollupOptions} */
 export default {
-    input: 'src/index.js',
-    output: {
-        file: 'dist/wxdraw.min.js',
-        format: 'cjs'
+  input: "src/index.js",
+  output: [
+    {
+      file: "dist/wxdraw.cjs.min.js",
+      format: "cjs",
     },
-    plugins: [
-        babel({
-            exclude: 'node_modules/**',
-            runtimeHelpers: true
-        }),
-        uglify()
-    ],
-    banner: ""
+    {
+      file: "dist/wxdraw.esm.min.js",
+      format: "es",
+    },
+  ],
+  plugins: [
+    // babel({
+    //   exclude: "node_modules/**",
+    //   babelHelpers: "bundled",
+    // }),
+    uglify(),
+  ],
 };

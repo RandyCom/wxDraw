@@ -99,10 +99,10 @@ Shape.prototype = {
         }
         if (this.draggable && this._getChoosed) {
             //console.log('move',this._layerIndex);          
+            this.Shape.moveDetect(x, y);
             this._eventStore['drag'].forEach(function (element) {
                 element(this);
             }, this);
-            this.Shape.moveDetect(x, y);
         }
     },
     upDetect: function () {

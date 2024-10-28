@@ -1,17 +1,12 @@
 {
-    "presets": [
-        [
-            "env",
-            {
-                "targets": {
-                    "ie": 8
-                },
-                "modules": false
-            }
-        ]
-    ],
-    "plugins": [
-        "transform-object-rest-spread",        
-        "external-helpers"
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": "entry",
+        "corejs": "3.22"
+      }
     ]
+  ],
+  "plugins": []
 }
