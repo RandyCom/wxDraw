@@ -158,7 +158,7 @@ export class Text extends CommonMethods {
   }
   detected(x, y) {
     // //console.log('方块', this.Option);
-    let _self = this;
+    // let _self = this;
 
     // //console.log('方块', _self.Option.x, x, _self.Option.y, y, (_self.Option.y + _self.Option.h), y, (_self.Option.x + _self.Option.w), x);
     // if (x > this.max.minX && x < this.max.maxX && y > this.max.minY && y < this.max.maxY) {
@@ -196,7 +196,7 @@ export class Text extends CommonMethods {
       context.fillText(
         this.text,
         this.boxOption.x - this.rotateOrigin[0] - this.offset.x,
-        this.boxOption.y - this.rotateOrigin[1] - this.offset.y
+        this.boxOption.y - this.rotateOrigin[1] - this.offset.y,
       );
     }
     context.restore();

@@ -1,9 +1,9 @@
 /*
- * @Author: Thunderball.Wu 
- * @Date: 2017-10-17 18:01:37 
+ * @Author: Thunderball.Wu
+ * @Date: 2017-10-17 18:01:37
  * @Last Modified by: Thunderball.Wu
  * @Last Modified time: 2017-11-29 10:12:04
- * 线条 
+ * 线条
  */
 
 import {
@@ -11,94 +11,100 @@ import {
   matrixToarray,
   getDetectPointOut,
   getDetectPointIn,
-  getDetectPointEdge
+  getDetectPointEdge,
 } from "../util/utils.js";
 import { Matrix } from "../util/matrix.js";
 import { Point } from "./mixins/points.js";
 import { commonAttr, commonUnAttr } from "./mixins/commonAttr.js"; //共有属性
-import { commonMethods } from "./mixins/commonMethods.js"; //共有方法
+import { CommonMethods } from "./mixins/commonMethods.js"; //共有方法
 import { getCurvePoints } from "./mixins/getCurvePoints.js"; //计算smooth点
 
-export function Line(option) {
-  var lOption = {
-    strokeStyle: "#000000",
-    points: [[1, 2], [23, 45], [2, 45], [230, 205]],
-    ...commonAttr()
-  };
+export class Line extends CommonMethods {
+  constructor(option) {
+    super();
+    let lOption = {
+      strokeStyle: "#000000",
+      points: [
+        [1, 2],
+        [23, 45],
+        [2, 45],
+        [230, 205],
+      ],
+      ...commonAttr(),
+    };
 
-  var lUoption = {
-    smooth: true,
-    ...commonUnAttr()
-  };
-  let _temOption = util.extend(option, lOption);
-  var _temUnOption = util.extend(option, lUoption);
+    let lUoption = {
+      smooth: true,
+      ...commonUnAttr(),
+    };
+    let _temOption = util.extend(option, lOption);
+    let _temUnOption = util.extend(option, lUoption);
 
-  this.Option = _temOption;
-  this.UnOption = _temUnOption; //不参与动画的属性
+    this.Option = _temOption;
+    this.UnOption = _temUnOption; //不参与动画的属性
 
-  this.max = {
-    maxX: null,
-    maxY: null,
-    minX: null,
-    minY: null
-  };
-  this.massCenter = this.genMassCenter(this.Option.points); // 拿到点位 先计算线段重心
-  this.posPoints = this.genPointsPositiveLoc();
+    this.max = {
+      maxX: null,
+      maxY: null,
+      minX: null,
+      minY: null,
+    };
+    this.massCenter = this.genMassCenter(this.Option.points); // 拿到点位 先计算线段重心
+    this.posPoints = this.genPointsPositiveLoc();
 
-  this.oriPoints = this.Option.points;
-  this._Points = this.Option.points;
-  this._CurvePoints = this.Option.points;
-  this.detectPoints = this.getDetectPoints();
-  this.getMax();
-  this._isChoosed = false;
+    this.oriPoints = this.Option.points;
+    this._Points = this.Option.points;
+    this._CurvePoints = this.Option.points;
+    this.detectPoints = this.getDetectPoints();
+    this.getMax();
+    this._isChoosed = false;
 
-  this.rotateOrigin = null;
-  this._dirty = true; //最新添加的 用于是否应该计算的
-  this._type = "line";
-  this._canRotateOrigin = true;
-}
-/**
- * 线的质心
- * 线的平移
- * 线的旋转
- * 线的绘制
- */
-Line.prototype = {
+    this.rotateOrigin = null;
+    this._dirty = true; //最新添加的 用于是否应该计算的
+    this._type = "line";
+    this._canRotateOrigin = true;
+  }
+  /**
+   * 线的质心
+   * 线的平移
+   * 线的旋转
+   * 线的绘制
+   */
   genMassCenter(points) {
     //计算质心
     let _allX = 0;
     let _allY = 0;
-    Array.prototype.forEach.call(points, function(item) {
+    Array.prototype.forEach.call(points, function (item) {
       _allX += item[0];
       _allY += item[1];
     });
 
     return {
       x: _allX / points.length,
-      y: _allY / points.length
+      y: _allY / points.length,
     };
-  },
+  }
   getOriPoints() {
     let _points = [];
 
-    this.posPoints.forEach(function(item) {
+    this.posPoints.forEach(function (item) {
       _points.push([this.massCenter.x - item[0], this.massCenter.y - item[1]]);
     }, this); //计算点位
     this.oriPoints = _points;
-  },
+  }
   genPointsPositiveLoc() {
     // 计算出所有 点与中心的相对位置 只用一次。。。 之后不再用 所以 cshaoe
     // 不能放大 缩小
     let _allPos = [];
-    this.Option.points.forEach(function(item) {
+    this.Option.points.forEach(function (item) {
       _allPos.push([this.massCenter.x - item[0], this.massCenter.y - item[1]]);
     }, this);
     return _allPos;
-  },
+  }
   getDetectPoints() {
     let prePoints = [],
       behPoints = []; //头尾点
-    this._Points.forEach(function(item, index) {
+    this._Points.forEach(function (item, index) {
       //除了头尾 其余的都要产生 两个对应点
       // if (index == 0||index == this._Points.length - 1 ) {
       // prePoints.push(item[])
@@ -120,7 +126,7 @@ Line.prototype = {
     // console.log('behPoints',behPoints);
     // console.log('SSSSSS', prePoints.concat(behPoints));
     return prePoints.concat(behPoints); //合在一起就是 一个圈了
-  },
+  }
   genPoints() {
     let _points = [];
     let origin = null;
@@ -132,7 +138,7 @@ Line.prototype = {
 
     // //console.log('item', origin);
 
-    this.oriPoints.forEach(function(item) {
+    this.oriPoints.forEach(function (item) {
       _points.push(this.getPointTodraw(item[0], item[1], origin));
     }, this);
 
@@ -144,11 +150,11 @@ Line.prototype = {
     // //console.log(this._Points);
     // //console.log(this.oriPoints);
     return this._Points; //除掉矩阵多余的部分;
-  },
+  }
   getPointTodraw(x, y, origin) {
     let angle = this.Option.rotate;
     return new Point(x, y).rotate(origin, angle); //计算出每一个点变化之后的位置
-  },
+  }
   getMax() {
     //绘制 与检测 不能在统一个地方
     let _Points = this._Points;
@@ -157,10 +163,10 @@ Line.prototype = {
       maxX: null,
       maxY: null,
       minX: null,
-      minY: null
+      minY: null,
     };
 
-    _Points.forEach(function(element) {
+    _Points.forEach(function (element) {
       // //console.log('el',element[1]);
       if (element[0] > this.max.maxX) {
         this.max.maxX = element[0];
@@ -182,10 +188,10 @@ Line.prototype = {
         this.max.minY = element[1];
       }
     }, this);
-  },
+  }
   createPath(context) {
     //创建路径
-    var points = [];
+    let points = [];
 
     if (this.UnOption.smooth) {
       points = this._CurvePoints;
@@ -198,10 +204,10 @@ Line.prototype = {
     context.beginPath();
     // //console.log(points.length);
     context.moveTo(points[0][0], points[0][1]);
-    for (var i = 1; i < points.length; i++) {
+    for (let i = 1; i < points.length; i++) {
       context.lineTo(points[i][0], points[i][1]);
     }
-  },
+  }
   stroke(context) {
     //线条就只有stroke了
     context.save();
@@ -211,13 +217,13 @@ Line.prototype = {
     this.setCommonstyle(context, "line");
     context.stroke();
     context.restore();
-  },
-  mixDraw: function(context) {
+  }
+  mixDraw(context) {
     this.stroke(context); //这里先这样写吧
-  },
+  }
   fill(context) {
     this.stroke(context); //这里先这样写吧
-  },
+  }
   _draw(context) {
     // //console.log(this.massCenter);
     //    //console.log(this.oriPoints);
@@ -235,13 +241,13 @@ Line.prototype = {
     this.createPath(context); //绘制
 
     this._dirty = false;
-  },
+  }
   move(x, y) {
     this.massCenter.x = x;
     this.massCenter.y = y;
     this._dirty = true;
     // //console.log('---------------', this.Option);
-  },
+  }
   detected(x, y) {
     // pnpoly 算法区域
     if (
@@ -261,7 +267,7 @@ Line.prototype = {
     }
 
     return false;
-  },
+  }
   moveDetect(x, y) {
     if (this._isChoosed == true) {
       this.move(x + this._offsetX, y + this._offsetY);
@@ -272,14 +278,14 @@ Line.prototype = {
       // this.detectPoints = this.getDetectPoints();
       // this.getMax();
     }
-  },
+  }
   _pnpolyTest(x, y) {
     // 核心测试代码 理论源于  https://wrf.ecse.rpi.edu//Research/Short_Notes/pnpoly.html
-    // var A = this.points[0];// 拿到前面两个点
-    // var B = this.points[1];
-    var ifInside = false;
-    var Points = this.detectPoints;
-    for (var i = 0, j = Points.length - 1; i < Points.length; j = i++) {
+    // let A = this.points[0];// 拿到前面两个点
+    // let B = this.points[1];
+    let ifInside = false;
+    let Points = this.detectPoints;
+    for (let i = 0, j = Points.length - 1; i < Points.length; j = i++) {
       /**
              * 0 4
                1 0
@@ -287,18 +293,17 @@ Line.prototype = {
                3 2
                4 3
              */
-      var Xi = Points[i][0],
+      let Xi = Points[i][0],
         Yi = Points[i][1];
-      var Xj = Points[j][0],
+      let Xj = Points[j][0],
         Yj = Points[j][1];
 
-      var insect =
-        Yi > y != Yj > y && x < (Xj - Xi) * (y - Yi) / (Yj - Yi) + Xi;
+      let insect =
+        Yi > y != Yj > y && x < ((Xj - Xi) * (y - Yi)) / (Yj - Yi) + Xi;
 
       if (insect) ifInside = !ifInside;
     }
 
     return ifInside;
-  },
-  ...commonMethods
-};
+  }
+}

@@ -178,7 +178,7 @@ export class Img extends CommonMethods {
         -this.Option.w / 2,
         -this.Option.h / 2,
         this.Option.w,
-        this.Option.h
+        this.Option.h,
       );
     } else {
       /**
@@ -193,7 +193,7 @@ export class Img extends CommonMethods {
         this.Option.x - this.Option.w / 2 - this.rotateOrigin[0],
         this.Option.y - this.Option.h / 2 - this.rotateOrigin[1],
         this.Option.w,
-        this.Option.h
+        this.Option.h,
       );
     }
     // console.log(this.oriPoints);

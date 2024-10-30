@@ -1,8 +1,8 @@
 let points =[];
-var fs = require('fs');
+let fs = require('fs');
 
 function genPoints(x,y,n){
-    for(var i=0;i<n;i++){
+    for(let i=0;i<n;i++){
         points.push([Math.random()*x,Math.random()*y])
     }
 

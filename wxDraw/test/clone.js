@@ -2,7 +2,7 @@
         let _obj = {};
         function _stringify(obj) {
             let _obj = {};
-            for (var key in obj) {
+            for (let key in obj) {
                 if (obj.hasOwnProperty(key) && typeof obj[key] !== 'object') {
                     _obj[key] == obj[key];
                 } else {
@@ -18,7 +18,7 @@
     }
 
 
- var a = {
+ let a = {
      a:{sss:{sss:{sss:2}}}
  }   
 
