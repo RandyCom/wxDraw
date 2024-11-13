@@ -324,12 +324,3 @@ export class Circle extends CommonMethods {
     return ifInside;
   }
 }
-
-/**
- * 方块
- */
-
-// module.exports = {
-//     Circle: Circle,
-//     Rect: Rect
-// }

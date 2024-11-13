@@ -6,12 +6,13 @@
  * 图形的基本性质 用于绑定 事件 以及拖拽 高亮用的
  */
 
-function ShapeBase(context, options) {
-  this._dragable = options.dragable ? options.dragable : false;
-  this._context = context;
+class ShapeBase {
+  constructor(context, options) {
+    this._dragable = options.dragable ? options.dragable : false;
+    this._context = context;
+  }
 }
-ShapeBase.prototype = function () {};
 
-module.exports = {
-  ShapeBase: ShapeBase,
+export {
+  ShapeBase,
 };

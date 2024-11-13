@@ -16,7 +16,6 @@
 import { guid } from "./util/utils.js";
 import { Store } from "./store/store.js";
 import { Shape } from "./shape/shape.js";
-// import { AnimationFrame } from "./animation/animationFrame.js";
 import { AnimationFrame } from "./animation/animationFrame.js";
 import { Animation } from "./animation/animation.js";
 import { eventBus } from "./util/eventBus.js";
@@ -31,49 +30,47 @@ import { AnimationTimer } from "./animation/animationTimer.js";
  * @param {any} h
  */
 
-function WxDraw(canvas, x, y, w, h) {
-  this.canvas = canvas;
-  this.wcid = guid();
-  this.store = new Store();
-  this.bus = new eventBus();
-  this.animation = new Animation(this.bus);
-  this.x = x;
-  this.y = y;
-  this.w = w;
-  this.h = h;
-  // 初始化 动画仓库 接收点
-  this.bus.add("addAnimation", this, this.addAnimationFrag);
-  this.bus.add("update", this, this.update);
-  this.bus.add("getDetectedLayers", this, this.getDetectedLayers);
-  this.bus.add("clearDetectedLayers", this, this.clearDetectedLayers);
-  this.bus.add("updateLayer", this, this.updateLayer);
-  this.bus.add("destory", this, this.destroy);
-  // //console.log(this.bus);
-  this.animation.start();
-  Shape.bus = this.bus;
-  this.detectedLayers = [];
-}
-
-WxDraw.prototype = {
-  add: function (item) {
+class WxDraw {
+  constructor(canvas, x, y, w, h) {
+    this.canvas = canvas;
+    this.wcid = guid();
+    this.store = new Store();
+    this.bus = new eventBus();
+    this.animation = new Animation(this.bus);
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    // 初始化 动画仓库 接收点
+    this.bus.add("addAnimation", this, this.addAnimationFrag);
+    this.bus.add("update", this, this.update);
+    this.bus.add("getDetectedLayers", this, this.getDetectedLayers);
+    this.bus.add("clearDetectedLayers", this, this.clearDetectedLayers);
+    this.bus.add("updateLayer", this, this.updateLayer);
+    this.bus.add("destory", this, this.destroy);
+    // //console.log(this.bus);
+    this.animation.start();
+    Shape.bus = this.bus;
+    this.detectedLayers = [];
+  }
+  add(item) {
     item.updateBus(this.bus);
     item._updateLayer(this.store.getLength());
     this.store.add(item);
-  },
-  draw: function () {
+  }
+  draw() {
     this.store.store.forEach(function (item) {
       item.paint(this.canvas);
     }, this);
     // console.log(this.canvas.actions);
-  },
-  tapDetect: function (e) {
+  }
+  tapDetect(e) {
     //事件检测
     // touchstart
     // touchmove
     // touchup
     // longpress
     //
-
     this.bus.dispatch("clearDetectedLayers", "no"); //清空touchstart选中数组
     let loc = this.getLoc(e.touches[0].pageX, e.touches[0].pageY);
     // console.log('tap',e.touches[0].pageX, e.touches[0].pageY)
@@ -81,8 +78,8 @@ WxDraw.prototype = {
       item.detect(loc.x, loc.y, "tap");
     }, this);
     // this.getLoc()
-  },
-  longpressDetect: function (e) {
+  }
+  longpressDetect(e) {
     //外置
     this.bus.dispatch("clearDetectedLayers", "no"); //清空touchstart选中数组
     let loc = this.getLoc(e.touches[0].pageX, e.touches[0].pageY);
@@ -90,26 +87,24 @@ WxDraw.prototype = {
     this.store.store.forEach(function (item) {
       item.detect(loc.x, loc.y, "longpress");
     }, this);
-  },
-  touchstartDetect: function (e) {
+  }
+  touchstartDetect(e) {
     //外置
     let loc = { x: e.touches[0].x, y: e.touches[0].y };
     // let loc = this.getLoc(e.touches[0].x, e.touches[0].y);
-
     // console.log(loc);
     this.store.store.forEach(function (item) {
       item.detect(loc.x, loc.y, "touchstart");
     }, this);
-  },
-  touchendDetect: function (e) {
+  }
+  touchendDetect(e) {
     //外置
     // let loc = this.getLoc(e.touches[0].x, e.touches[0].y);
-
     this.store.store.forEach(function (item) {
       item.upDetect();
     }, this);
-  },
-  touchmoveDetect: function (e) {
+  }
+  touchmoveDetect(e) {
     let loc = { x: e.touches[0].x, y: e.touches[0].y };
     // console.log('move',loc);
     this.store.store.forEach(function (item) {
@@ -120,28 +115,27 @@ WxDraw.prototype = {
     //  //console.log(loc);
     this.draw();
     this.canvas.draw();
-  },
+  }
   // upDetect: function () {
   //     this.store.store.forEach(function (item) {
   //         item.upDetect();
   //     }, this);
   // },
-  getLoc: function (x, y) {
+  getLoc(x, y) {
     //获取点击相对位置
-
     // console.log(x,y);
     // console.log(x-this.x,y-this.y);
     return {
       x: x - this.x > 0 ? (x - this.x > this.w ? this.w : x - this.x) : 0,
       y: y - this.y > 0 ? (y - this.y > this.h ? this.h : y - this.y) : 0,
     };
-  },
-  update: function () {
+  }
+  update() {
     // 用户手动更新
     this.draw();
     this.canvas.draw();
-  },
-  AnimationCenter: function () {},
+  }
+  AnimationCenter() {}
   /**
    * 更新动画
    * 每次创建的都是动画碎片
@@ -154,7 +148,7 @@ WxDraw.prototype = {
    * @param {any} AnimationWraper  创建好的动画容器
    * @param {any} Shapeid  id
    */
-  addAnimationFrag: function (AnimationWraper, Shapeid) {
+  addAnimationFrag(AnimationWraper, Shapeid) {
     // //console.log(AnimationOption);
     // this.animation.animationFragStore.push(AnimationOption);// 添加 动画碎片
     // this.animation.animationFragStore2.push(AnimationOption);// 添加 动画碎片
@@ -163,42 +157,35 @@ WxDraw.prototype = {
     if (this.animation.animationFragStore[Shapeid]) {
       //
       // console.log('已经有动画了');
-      this.animation.animationFragStore[Shapeid][
-        this.animation.animationFragStore[Shapeid].length - 1
-      ].endCallWraper = AnimationWraper;
+      this.animation.animationFragStore[Shapeid][this.animation.animationFragStore[Shapeid].length - 1].endCallWraper =
+        AnimationWraper;
       this.animation.animationFragStore[Shapeid].push(AnimationWraper);
     } else {
       // console.log('初始化 ');
-
       this.animation.animationFragStore[Shapeid] = [AnimationWraper];
     }
 
     // //console.log(this.animation.animationFragStore2);
-  },
-  getDetectedLayers: function (layers) {
+  }
+  getDetectedLayers(layers) {
     this.detectedLayers.push(layers); // 这个地方不能推一次 就 判断一次 应该全部推完了 之后再来判断
+
     // console.log(this.detectedLayers);
-    if (
-      this.detectedLayers.length == this.store.getLength() &&
-      Math.max.apply(null, this.detectedLayers) != -1
-    ) {
+    if (this.detectedLayers.length == this.store.getLength() && Math.max.apply(null, this.detectedLayers) != -1) {
       // console.log('选取层级');
       this.store.find(Math.max.apply(null, this.detectedLayers)).getChoosed();
     }
 
-    if (
-      this.detectedLayers.length == this.store.getLength() &&
-      Math.max.apply(null, this.detectedLayers) == -1
-    ) {
+    if (this.detectedLayers.length == this.store.getLength() && Math.max.apply(null, this.detectedLayers) == -1) {
       this.clearDetectedLayers();
     }
     //   //console.log(this.detectedLayers);
-  },
-  clearDetectedLayers: function () {
+  }
+  clearDetectedLayers() {
     //console.log('清空选中层级');
     this.detectedLayers = []; //清空选中层级
-  },
-  updateLayer: function (who, oldIndex, index) {
+  }
+  updateLayer(who, oldIndex, index) {
     // console.log(this);
     let _index = 0,
       flag;
@@ -212,9 +199,7 @@ WxDraw.prototype = {
     if (flag) {
       //相对增减
       // console.log('相对增减');
-      _index =
-        oldIndex +
-        flag * parseInt(flag == -1 ? index.split("-")[1] : index.split("+")[1]);
+      _index = oldIndex + flag * parseInt(flag == -1 ? index.split("-")[1] : index.split("+")[1]);
       // console.log(_index);
     } else {
       _index = parseInt(index);
@@ -230,34 +215,31 @@ WxDraw.prototype = {
     this.store.changeIndex(who, oldIndex, _index);
     // console.log(this.store);
     this._updateLayer();
-  },
-  destroy: function (index) {
+  }
+  destroy() {
+    this.reset();
+    this.canvas = null;
+  }
+  remove(index) {
     this.store.store.splice(index, 1);
-  },
-  _updateLayer: function () {
+  }
+  _updateLayer() {
     this.store.store.forEach(function (item, index) {
       item._updateLayer(index); //这里没写好 。。但现在没想到更好的办法
     });
-  },
-  clear: function () {
+  }
+  clear() {
     this.canvas.clearActions();
     this.store.clear();
-    this.canvas = null;
     this.bus.dispatch("clearAnimation", "no", "no");
-  },
-  reset: function () {
+  }
+  reset() {
     this.canvas.clearRect(this.x, this.y, this.w, this.h);
     this.canvas.draw();
     this.clear();
-  },
-};
+  }
+}
 
 const animationFrame = AnimationFrame();
 
-export {
-  WxDraw as wxDraw,
-  WxDraw,
-  Shape,
-  animationFrame as AnimationFrame,
-  AnimationTimer,
-};
+export { WxDraw as wxDraw, WxDraw, Shape, animationFrame as AnimationFrame, AnimationTimer };

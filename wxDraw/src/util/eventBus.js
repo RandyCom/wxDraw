@@ -8,11 +8,11 @@
  *  这个库现在就用这个 因为用的地方太多 先不做改动
  */
 
-export const eventBus = function () {
-  this.eventList = [];
-};
-eventBus.prototype = {
-  add: function (name, scope, event) {
+export class eventBus {
+  constructor() {
+    this.eventList = [];
+  }
+  add(name, scope, event) {
     //添加事件 初始化事件
     //console.log('添加' + name);
     if (this.eventList.length) {
@@ -37,14 +37,12 @@ eventBus.prototype = {
     }
 
     //console.log(this.eventList);
-  },
-  dispatch: function (name, scope) {
+  }
+  dispatch(name, scope) {
     //执行事件 这里有两种状况  执行最外层或者是事件添加层 的scope 或者是 当地的scope
-
     let _temArgu = arguments;
 
     // //console.log(_temArgu);
-
     if (arguments.length < 2) {
       return false;
     }
@@ -66,8 +64,8 @@ eventBus.prototype = {
         });
       }
     });
-  },
-  destroy: function () {
+  }
+  destroy() {
     // 取消事件
-  },
-};
+  }
+}
